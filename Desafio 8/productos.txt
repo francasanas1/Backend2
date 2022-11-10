@@ -1,0 +1,8 @@
+[
+    {"producto":"Absolut Vodka","precio":500,"imagen":"http://cdn.shopify.com/s/files/1/0279/8151/2798/products/VO0001_1200x1200.jpg?v=1598030242","id":1},
+    {"producto":"Capitan Morgan","precio":600,"imagen":"http://cdn.shopify.com/s/files/1/0279/8151/2798/products/VO0001_1200x1200.jpg?v=1598030242","id":2},
+    {"producto":"SKY Blue","precio":700,"imagen":"http://cdn.shopify.com/s/files/1/0279/8151/2798/products/VO0001_1200x1200.jpg?v=1598030242","id":3},
+    {"producto":"Jimador","precio":650,"imagen":"http://cdn.shopify.com/s/files/1/0279/8151/2798/products/VO0001_1200x1200.jpg?v=1598030242","id":4},
+    {"producto":"Corralejo","precio":850,"imagen":"http://cdn.shopify.com/s/files/1/0279/8151/2798/products/VO0001_1200x1200.jpg?v=1598030242","id":5},
+    {"producto":"Black Label","precio":720,"imagen":"http://cdn.shopify.com/s/files/1/0279/8151/2798/products/VO0001_1200x1200.jpg?v=1598030242","id":6}
+]

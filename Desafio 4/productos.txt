@@ -1,0 +1,6 @@
+[
+  { id: 0, nombre: "Chocolate" },
+  { id: 1, nombre: "Frutilla" },
+  { id: 2, nombre: "Dulce de leche" },
+  { id: 3, nombre: "Limon" },
+];
