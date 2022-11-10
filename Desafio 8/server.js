@@ -2,15 +2,15 @@ const express = require("express");
 const { Router } = express;
 const multer = require("multer");
 const app = express();
-const routerUsuarios = Router();
+const routerDeProductos = Router();
 const port = process.env.PORT || 8080;
 
-const Contenedor = require("./Desafio 4./index.js");
+const Contenedor = require("./index.js");
 const containerProducts = new Contenedor("productos.txt");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/api/usuarios", routerDeProductos);
+app.use("/api/productos", routerDeProductos);
 app.use("/public", express.static(__dirname + "/public"));
 
 app.listen(port, () => {
