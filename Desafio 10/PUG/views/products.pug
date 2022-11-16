@@ -1,0 +1,23 @@
+html 
+    head 
+        title Formulario  
+    body
+       h2 Bienvenido
+       nav 
+            div
+                ul
+                    li
+                        a(href="/") Formulario
+                    li
+                        a(href="/productos") Productos 
+            div 
+                h2 Productos 
+                div 
+
+                for item in products
+                div
+                    p Producto: #{item.title}
+                    p Precio: $ #{item.price}            
+                    img(class='product-img', src=item.url)
+
+

@@ -23,11 +23,11 @@ app.set("view engine", "pug");
 app.set("views", "./views");
 
 app.get("/", (req, res) => {
-  res.render("form.pug");
+  res.render("form");
 });
 
 app.get("/productos", (req, res) => {
-  res.render("products.pug");
+  res.render("products");
 });
 
 app.post("/", async (req, res, next) => {
