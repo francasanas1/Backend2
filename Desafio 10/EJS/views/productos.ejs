@@ -13,13 +13,14 @@
     <title>Document</title>
   </head>
   <body>
-    <%- include("./partials/nav.ejs") %>
+    <%- include('./partial/nav.ejs'); %>
     <h2>Productos</h2>
 
     <% if(productos.length>0){ %> <% productos.forEach((producto)=>{ %>
-    <p>Title: <%= producto.title %></p>
+    <p>Title: <%= producto.name%></p>
     <p>Price: <%= producto.price %></p>
-    <img src="<%" ="producto.url" % /> alt=""> <% }) %> <% } else{ %>
+    <img src="<%= producto.url %>" />
+    <% }) %> <% } else{ %>
     <h1>No existen productos</h1>
     <% } %>
 

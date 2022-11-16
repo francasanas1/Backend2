@@ -21,7 +21,7 @@ router.post("/", async (req, res) => {
   const producto = req.body;
   console.log(producto);
   await contenedorProductos.save(producto);
-  res.redirect("/productos");
+  res.redirect("productos");
 });
 
 module.exports = router;

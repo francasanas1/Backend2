@@ -23,12 +23,13 @@ app.get("/", (req, res) => {
 });
 
 app.get("/productos", async (req, res) => {
+  const productos = await contenedorProductos.getAll();
   res.render("productos", {
-    productos: await contenedorProductos.getAll(),
+    productos: productos,
   });
 });
 
-app.post("/productos", async (req, res, next) => {
+app.post("/", async (req, res, next) => {
   let producto = req.body;
   console.log(producto);
 
@@ -38,5 +39,5 @@ app.post("/productos", async (req, res, next) => {
     return next(error);
   }
   await contenedorProductos.save(producto);
-  res.redirect("/");
+  res.redirect("/productos");
 });
