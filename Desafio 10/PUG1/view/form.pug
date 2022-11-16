@@ -1,0 +1,24 @@
+html 
+    head 
+        title Formulario  
+    body
+       h2 Bienvenido
+       nav 
+            div
+                ul
+                    li
+                        a(href="/") Formulario
+                    li
+                        a(href="/productos") Productos 
+            h3 Ingrese Producto
+                form(action="/productos/"  method="post") 
+                    div
+                        label Title: 
+                        input(type="text", name="title")
+                    div
+                        label Price: 
+                        input(type="number", name="price")
+                    div
+                        label Url: 
+                        input(type="text", name="url")
+                    button(type="submit") Enviar
