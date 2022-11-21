@@ -25,11 +25,11 @@ app.get("/", (req, res) => {
 app.get("/productos", async (req, res) => {
   const productos = await contenedorProductos.getAll();
   res.render("productos", {
-    productos: productos,
+    productos: await contenedorProductos.getAll(),
   });
 });
 
-app.post("/", async (req, res, next) => {
+app.post("/productos", async (req, res, next) => {
   let producto = req.body;
   console.log(producto);
 

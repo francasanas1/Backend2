@@ -17,7 +17,7 @@
     <h2>Productos</h2>
 
     <% if(productos.length>0){ %> <% productos.forEach((producto)=>{ %>
-    <p>Title: <%= producto.name%></p>
+    <p>Title: <%= producto.title%></p>
     <p>Price: <%= producto.price %></p>
     <img src="<%= producto.url %>" />
     <% }) %> <% } else{ %>

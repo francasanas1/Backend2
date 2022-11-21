@@ -16,7 +16,7 @@ router.get("/", (req, res) => {
   res.render("form");
 });
 
-router.post("/", async (req, res) => {
+router.post("/products", async (req, res) => {
   console.log(req.body);
   const producto = req.body;
   console.log(producto);
