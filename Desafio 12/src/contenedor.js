@@ -7,18 +7,47 @@ class Contenedor {
   }
 
   async getAll() {
-    const data = await fs.promises.readFile(this.filePath, "utf-8");
-    return JSON.parse(data);
+    try {
+      const data = await fs.promises.readFile(this.filePath, "utf-8");
+      return JSON.parse(data);
+    } catch (error) {
+      return "El archivo no puede ser leido";
+    }
   }
 
-  async save(ObjProducto) {
-    const productos = await this.getAll();
-    const id = productos.length + 1;
-    ObjProducto.id = id;
-    productos.push(ObjProducto);
-    const productosString = JSON.stringify(productos);
-    await fs.promises.writeFile("productos.json", productosString);
-    return productos;
+  async save(producto) {
+    try {
+      const productos = await this.getAll();
+      let idAnterior;
+      let idNuevo;
+      let productoId;
+
+      if (productos.length > 0) {
+        /* const productos = JSON.parse(contenido) */
+
+        idAnterior = productos[productos.length - 1].id;
+        idNuevo = idAnterior + 1;
+        productoId = { ...producto, id: idNuevo };
+        productos.push(productoId);
+
+        await fs.promises.writeFile(
+          this.filePath,
+          JSON.stringify(productos, null, 2)
+        );
+      } else {
+        idNuevo = 1;
+        productoId = { ...producto, id: idNuevo };
+
+        await fs.promises.writeFile(
+          this.filePath,
+          JSON.stringify([productoId], null, 2)
+        );
+      }
+
+      return idNuevo;
+    } catch (error) {
+      console.log("error");
+    }
   }
 
   async getById(id) {
