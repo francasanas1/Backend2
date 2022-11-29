@@ -6,15 +6,14 @@ const contenedorProductos = new Contenedor("./src/files/productos.txt");
 const contenedorCart = new Carrito("./src/files/cart.txt");
 
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8000;
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port http://localhost:${PORT}`);
 });
 
-const { Router } = express;
-const routerProductos = Router();
-const routerCarrito = Router();
+const routerProductos = express.Router();
+const routerCarrito = express.Router();
 
 app.use("/api/carrito", routerCarrito);
 app.use("/api/productos", routerProductos);
@@ -74,6 +73,7 @@ routerProductos.delete("/:id", VerifyAdmin, async (req, res) => {
 routerCarrito.get("/:id/productos", async (req, res) => {
   const idCart = parseInt(req.params.id);
   const cartProducts = await contenedorCart.getCartProducts(idCart);
+  res.json(cartProducts);
 });
 
 //buscamos eliminar un carrito
@@ -91,7 +91,7 @@ routerCarrito.delete("/:id/productos/:id_prod", async (req, res) => {
   res.json(newCart);
 });
 
-routerCarrito.post("/:id/productos/:id_prod", async (req, res) => {
+routerCarrito.post("/:id/productos", async (req, res) => {
   const idCart = parseInt(req.params.id);
   const idProd = parseInt(req.body.id_prod);
   newCart = await contenedorCart.addToCart(idCart, idProd);

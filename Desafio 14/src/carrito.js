@@ -1,6 +1,8 @@
 const fs = require("fs");
 const Contenedor = require("./contenedor.js");
 const contenedorProductos = new Contenedor("./src/files/productos.txt");
+const { get } = require("http");
+const { Console } = require("console");
 
 class Carrito {
   constructor(filename) {
@@ -54,9 +56,10 @@ class Carrito {
         //sumo +1 al nuevo carrito
         idNuevo = idAnterior + 1;
         cartId = { id: idNuevo, products: [], time: Date.now() };
+        carts.push(cartId);
         await fs.promises.writeFile(
           this.filePath,
-          JSON.stringify([cartId], null, 2)
+          JSON.stringify(carts, null, 2)
         );
         //null es el valor que devuelve en caso de no haber podido funcionar el stringify. Y 2 es el valor de sangrias que debe dejar hacia abajo (es para que en el .txt no ponga el objeto en una sola linea).
         //JSON.stringify convierte un valor de JavaScript en JSON
