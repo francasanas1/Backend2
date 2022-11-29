@@ -52,6 +52,7 @@ class Contenedor {
 
   async getById(id) {
     const productos = await this.getAll();
+    console.log(productos);
     const producto = productos.find((producto) => producto.id == id);
     if (!producto) return console.log("el id no existe");
     return producto;
