@@ -42,8 +42,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8000/api/productos/1",
-							"protocol": "http",
+							"raw": "localhost:8000/api/productos/8",
 							"host": [
 								"localhost"
 							],
@@ -51,7 +50,7 @@
 							"path": [
 								"api",
 								"productos",
-								"1"
+								"8"
 							]
 						}
 					},

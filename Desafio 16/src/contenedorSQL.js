@@ -1,23 +1,52 @@
-const fs = require("fs");
+const knex = require("knex");
 
-class Contenedor {
+class ContenedorSQL {
   constructor(filename) {
     this.filePath = filename;
   }
 
   async getAll() {
-    const data = await fs.promises.readFile(this.filePath, "utf-8");
-    return JSON.parse(data);
+    try {
+      const data = await fs.promises.readFile(this.filePath, "utf-8");
+      return JSON.parse(data);
+    } catch (error) {
+      return "El archivo no puede ser leido";
+    }
   }
 
-  async save(ObjProducto) {
-    const productos = await this.getAll();
-    const id = productos.length + 1;
-    ObjProducto.id = id;
-    productos.push(ObjProducto);
-    const productosString = JSON.stringify(productos);
-    await fs.promises.writeFile("productos.json", productosString);
-    return productos;
+  async save(producto) {
+    try {
+      const productos = await this.getAll();
+      let idAnterior;
+      let idNuevo;
+      let productoId;
+
+      if (productos.length > 0) {
+        /* const productos = JSON.parse(contenido) */
+
+        idAnterior = productos[productos.length - 1].id;
+        idNuevo = idAnterior + 1;
+        productoId = { ...producto, id: idNuevo };
+        productos.push(productoId);
+
+        await fs.promises.writeFile(
+          this.filePath,
+          JSON.stringify(productos, null, 2)
+        );
+      } else {
+        idNuevo = 1;
+        productoId = { ...producto, id: idNuevo };
+
+        await fs.promises.writeFile(
+          this.filePath,
+          JSON.stringify([productoId], null, 2)
+        );
+      }
+
+      return idNuevo;
+    } catch (error) {
+      console.log("error");
+    }
   }
 
   async getById(id) {
@@ -69,17 +98,4 @@ class Contenedor {
   }
 }
 
-module.exports = Contenedor;
-const cont = new Contenedor();
-
-// cont.save({ nombre: "Pepsi", precio: "1100" });
-// cont.getById(1).then((res) => console.log(res));
-// cont.getAll().then((res) => console.log(res));
-// cont.deleteById(1).then((res) => console.log(res));
-// cont.deleteAll().then((res) => console.log(res));
-
-// save(Object): Number - Recibe un objeto, lo guarda en el archivo, devuelve el id asignado.
-// getById(Number): Object - Recibe un id y devuelve el objeto con ese id, o null si no está.
-// getAll(): Object[] - Devuelve un array con los objetos presentes en el archivo.
-// deleteById(Number): void - Elimina del archivo el objeto con el id buscado.
-// deleteAll(): void - Elimina todos los objetos presentes en el archivo.
+module.exports = { ContenedorSQL };

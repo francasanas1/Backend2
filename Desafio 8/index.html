@@ -6,6 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
   </head>
-  <body></body>
-  <script src="server.js"></script>
+  <body>
+    <h2>Ingrese Producto</h2>
+    <form action="/api/productos/" method="post">
+      Title: <input type="text" name="title" /> Price:
+      <input type="number" name="price" />
+      <button>Enviar</button>
+    </form>
+    <!--  <h2>Modificar producto</h2>
+    <form action="/api/productos/:id"  method="put">
+        Title: <input type="text" name="title" />
+        Price: <input type="number" name="price" />
+        <button>Enviar</button>
+      </form> -->
+  </body>
 </html>

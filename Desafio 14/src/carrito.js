@@ -16,7 +16,7 @@ class Carrito {
         const carts = JSON.parse(contenido);
         return carts;
       } else {
-        return [];
+        return "No hay carritos cargados en el sistema";
       }
     } catch (error) {
       return "Error:" + error;
@@ -83,9 +83,10 @@ class Carrito {
       const products = await contenedorProductos.getAll();
       if (carts.some((a) => a.id === idCart)) {
         if (products.some((a) => a.id === idProducto)) {
-          let index = carts.findIndex((a) => a.id === idProducto);
-          const nuevosProductos = [...carts(carts[index].products), idProducto];
-          carts[index].products = nuevoProductos;
+          let index = carts.findIndex((a) => a.id === idCart);
+          const nuevosProductos = [...carts[index].products, idProducto];
+          console.log(nuevosProductos);
+          carts[index].products = nuevosProductos;
           const contenidoNuevo = JSON.stringify(carts, null, 2);
           await fs.promises.writeFile(this.filePath, contenidoNuevo);
           return carts;

@@ -21,6 +21,10 @@ const contenedorProductos = new Contenedor("productos.txt");
 app.get("/", (req, res) => {
   res.render("form");
 });
+// probar capaz que esto sirva para solucionar el error
+app.post("/", (req, res) => {
+  res.render("form");
+});
 
 app.get("/productos", async (req, res) => {
   const productos = await contenedorProductos.getAll();

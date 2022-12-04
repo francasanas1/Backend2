@@ -48,5 +48,5 @@ routerDeProductos.put("/:id", async (req, res, next) => {
 routerDeProductos.delete("/:id", async (req, res, next) => {
   let id = parseInt(req.params.id);
   console.log(id);
-  res.json(await contenedorProductos.deleteById(id));
+  res.json(await containerProducts.deleteById(id));
 });
