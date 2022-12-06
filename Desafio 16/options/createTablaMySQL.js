@@ -1,8 +1,12 @@
-const { options } = require("./options/mysql.js");
-//conecta la libreria
-const knex = require("knex")(options);
+const { options } = require("./databaseConfig");
 
-knex.schema
+//conecta la libreria
+const knex = require("knex");
+
+//crear instancia de la base de datos de mysql
+const databaseMariadb = knex(options.MySQL);
+
+await databaseMariadb.schema
   .createTable("productos", (table) => {
     table.increments("id"),
       table.string("title"),
@@ -22,7 +26,7 @@ knex.schema
   });
 //finally es algo que va a pasar salga bien o mal
 
-knex("productos")
+databaseMariadb("productos")
   .insert([
     {
       title: "Fernet",

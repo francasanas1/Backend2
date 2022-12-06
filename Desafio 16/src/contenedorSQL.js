@@ -1,99 +1,77 @@
 const knex = require("knex");
 
+// const database = knex(options)
+
 class ContenedorSQL {
-  constructor(filename) {
-    this.filePath = filename;
+  constructor(options, tableName) {
+    this.database = knex(options);
+    this.table = tableName;
   }
 
   async getAll() {
     try {
-      const data = await fs.promises.readFile(this.filePath, "utf-8");
-      return JSON.parse(data);
+      //obtenemos los registros de la tabla
+      const response = await this.database.from(this.table).select("*");
+      return response;
     } catch (error) {
-      return "El archivo no puede ser leido";
+      return `Error: ${error}`;
     }
   }
 
-  async save(producto) {
+  async save(object) {
     try {
-      const productos = await this.getAll();
-      let idAnterior;
-      let idNuevo;
-      let productoId;
-
-      if (productos.length > 0) {
-        /* const productos = JSON.parse(contenido) */
-
-        idAnterior = productos[productos.length - 1].id;
-        idNuevo = idAnterior + 1;
-        productoId = { ...producto, id: idNuevo };
-        productos.push(productoId);
-
-        await fs.promises.writeFile(
-          this.filePath,
-          JSON.stringify(productos, null, 2)
-        );
-      } else {
-        idNuevo = 1;
-        productoId = { ...producto, id: idNuevo };
-
-        await fs.promises.writeFile(
-          this.filePath,
-          JSON.stringify([productoId], null, 2)
-        );
-      }
-
-      return idNuevo;
+      const [id] = await this.database.from(this.table).insert(object);
+      return `Se guardo exitosamente con el id ${id}`;
     } catch (error) {
-      console.log("error");
+      return `Error: ${error}`;
     }
   }
 
-  async getById(id) {
-    const productos = await this.getAll();
-    const producto = productos.find((producto) => producto.id == id);
-    if (!producto) return console.log("el id no existe");
-    return producto;
+  async getById(id1) {
+    try {
+      const [producto] = await this.database
+        .from(this.table)
+        .select("*")
+        .where("id", id1);
+      if (producto) {
+        const productoFinal = JSON.parse(JSON.stringify(producto));
+        console.log(productoFinal);
+        return productoFinal;
+      } else {
+        return "No hay producto con ese ID";
+      }
+    } catch (error) {
+      return `Error: ${error}`;
+    }
   }
 
-  async deleteById(id) {
-    const productos = await this.getAll();
-    const producto = productos.find((producto) => producto.id == id);
-    if (!producto) {
-      console.log("No existe producto con ese id");
-    } else {
-      let productoFilt = productos.filter((producto) => producto.id != id);
-      await fs.promises.writeFile(this.filePath, JSON.stringify(productoFilt));
+  async deleteById(id1) {
+    try {
+      await this.database.from(this.table).select("*").where("id", id1).del();
+      return `El producto con id: ${id1} fue eliminado`;
+    } catch (error) {
+      return "No existe producto con ese ID";
     }
   }
 
   async deleteAll() {
-    await fs.promises.writeFile(this.filePath, JSON.stringify([], null));
+    try {
+      await this.database.from(this.table).del();
+      return "Datos eliminados de la tabla";
+    } catch (error) {
+      return `Error: ${error}`;
+    }
   }
 
-  async modifyElement(id, body) {
+  async updateById(idChange, productChange) {
     try {
-      let all = this.getAll();
-      let product = all.findIndex((el) => el.id == id);
-      if (product >= 0) {
-        id = parseInt(id);
-        let newProduct = { ...body, id };
-        all[product] = newProduct;
-        let products = JSON.stringify(all);
-        fs.writeFileSync("./productos.txt", products);
-        return {
-          res: true,
-          id: id,
-          msg: "producto correctamente modificado",
-          producto: body,
-        };
-      }
-      if (product == -1) {
-        console.log("err");
-        return { err: true, id: id, msg: "producto a modificar no existe" };
-      }
-    } catch {
-      console.log(err);
+      await this.database
+        .from(this.table)
+        .where("id", idChange)
+        .update(productChange);
+      return `Producto con id:${idChange} cambiado`;
+    } catch (error) {
+      return `Error: ${error}`;
     }
   }
 }

@@ -1,19 +1,21 @@
 const express = require("express");
-const Contenedor = require("./contenedor.js");
-const Messages = require("./messages.js");
 const Handlebars = require("express-handlebars");
-const { Server } = require("socket.io");
-const Swal = require("sweetalert2");
+const { options } = require("./options/dataBaseConfig.js");
+const { ContenedorSQL } = require("./src/contenedorSQL");
+const PORT = process.env.PORT || 8080;
 
-const contenedorProductos = new Contenedor("productos.txt");
-const contenedorMessages = new Messages("messages.txt");
+const httpServer = require("http").createServer(app);
+const io = require("socket.io")(httpServer);
+
+const productosApi = new ContenedorSQL(options.MySQL, "productos");
+const chatApi = new ContenedorSQL(options.SQLite, "chat");
+
 const app = express();
-const puerto = 8080;
+const router = express.Router();
 
 const server = app.listen(8080, () =>
   console.log("server listening on port 8080")
 );
-const io = new Server(server);
 
 app.engine("handlebars", Handlebars.engine());
 app.set("views", __dirname + "/views");
@@ -21,66 +23,70 @@ app.set("view engine", "handlebars");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.use(express.static(__dirname + `/public`));
 
-//IMPLEMENTACION
-// const httpServer = require("http").createServer(app);
-// const io = require("socket.io")(httpServer);
-
 app.get("/", (req, res) => {
-  res.render("form");
+  res.render("home");
 });
 
-app.get("/productos", async (req, res) => {
-  const productos = await contenedorProductos.getAll();
-  res.render("products", {
-    productos: productos,
-  });
+router.get("/", async (req, res) => {
+  res.render("products", { products: await productosApi.getAll() });
 });
 
-app.post("/productos", async (req, res) => {
-  const producto = req.body;
-  await contenedorProductos.save(producto);
-  res.redirect("/");
+router.get("/:id", async (req, res) => {
+  const productId = req.params.id;
+  console.log(productId);
+  const product = await productosApi.getById(parseInt(productId));
+  console.log(product);
+  return res.json(product);
 });
 
+router.post("/", async (req, res) => {
+  const newProduct = req.body;
+  const result = await productosApi.save(newProduct);
+  res.send(result);
+});
+
+router.put("/:id", async (req, res) => {
+  const cambioObj = req.body;
+  const productId = req.params.id;
+  const result = await productosApi.updateById(parseInt(productId), cambioObj);
+  res.json(result);
+});
+
+router.delete("/:id", async (req, res) => {
+  const productId = req.params.id;
+  const result = await productosApi.deleteById(parseInt(productId));
+  res.json(result);
+});
+
+router.delete("/", async (req, res) => {
+  const result = await productosApi.deleteAll();
+  res.json(result);
+});
+
+app.use("/api/productos", router);
+
+//configuracion websocket
 io.on("connection", async (socket) => {
-  io.sockets.emit("messagesChat", await contenedorMessages.allMessages());
-  socket.on("newMsg", async (data) => {
-    //enviamos los msg a todos los sockets conectados
-    io.sockets.emit("messagesChat", await contenedorMessages.newMessage(data));
-  });
-});
+  //PRODUCTOS
+  //envio de los productos al socket que se conecta.
+  io.sockets.emit("products", await productosApi.getAll());
 
-io.on("connection", async (socket) => {
-  io.sockets.emit("productsArray", await contenedorProductos.getAll());
-
-  //recibir el producto
+  //recibimos el producto nuevo del cliente y lo guardamos con filesystem
   socket.on("newProduct", async (data) => {
-    //data es ek producto que recibo del formulario
-    await contenedorProductos.save(data);
-    //enviar todos los productos actualizados
+    await productosApi.save(data);
+    //despues de guardar un nuevo producto, enviamos el listado de productos actualizado a todos los sockets conectados
+    io.sockets.emit("products", await productosApi.getAll());
+  });
 
-    io.sockets.emit("productsArray", await contenedorProductos.getAll());
+  //CHAT
+  //Envio de todos los mensajes al socket que se conecta.
+  io.sockets.emit("messages", await chatApi.getAll());
+
+  //recibimos el mensaje del usuario y lo guardamos en el archivo chat.txt
+  socket.on("newMessage", async (newMsg) => {
+    await chatApi.save(newMsg);
+    io.sockets.emit("messages", await chatApi.getAll());
   });
 });
-
-// // io.on es una funcion que corre cada vez que el cliente se conecta a nuestro servidor
-// io.on("connection", (socket) => {
-//   //socket.emit("msg", "hola front!");
-//   const fecha = new Date().toUTCString();
-//   // cada vez que un socket me mande un msg desde el front, pasa lo siguiente..
-//   socket.on("msg", (data) => {
-//     console.log("data", data);
-//     msgs.push({
-//       socketid: socket.id,
-//       email: data.email,
-//       mensaje: data.mensaje,
-//       fecha: fecha,
-//     });
-//     contenedorMsj.save(msgs);
-//     // Despues de pushear el mensaje, se lo mando a todos los sockets
-//     io.sockets.emit("msg-list", msgs);
-//   });
-// });

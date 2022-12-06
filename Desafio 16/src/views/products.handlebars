@@ -1,13 +1,27 @@
-<div>
-  <h2>Prouductos</h2>
-  {{#if productos}}
-    {{#each productos}}
-      <p>Id: {{this.id}} </p>
-      <p>Nombre: {{this.title}} </p>
-      <p>Precio: {{this.price}} </p><br />
-      <img src="{{this.url}}" alt="" />
-    {{/each}}
+<div class="m-5">
+  {{#if products}}
+    <h2 class="text-success">Productos</h2>
+    <table class="table table-bordered">
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">Titulo</th>
+          <th scope="col">Precio</th>
+          <th scope="col">Imagen</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each products}}
+          <tr>
+            <td>{{this.title}}</td>
+            <td>{{this.price}}</td>
+            <td><img width="70" src={{this.thumbnail}} /></td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
   {{else}}
-    <p>No existen prouctos</p>
+    <div>
+      <p class="empty-list">No hay productos</p>
+    </div>
   {{/if}}
 </div>
