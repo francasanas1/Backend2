@@ -1,0 +1,76 @@
+0) crear una base de datos llamada ecommerce que contenga dos colecciones: mensajes y productos.
+1) Agregar 10 documentos con valores distintos a las colecciones mensajes y productos. El formato de los
+documentos debe estar en correspondencia con el que venimos utilizando en el entregable con base de datos MariaDB. 
+Definir las claves de los documentos en relación a los campos de las tablas de esa base. En el caso de los
+productos, poner valores al campo precio entre los 100 y 5000 pesos(eligiendo valores intermedios, ej: 120,
+580, 900, 1280, 1700, 2300, 2860, 3350, 4320, 4990). 
+
+// use ecommerce
+// db.mensajes.insert([
+    {email: 'fran.casanas.10@gmail.com', date: ISODate(), mensaje: 'Hola1!'},
+    {email: 'fran.casanas.10@gmail.com', date: ISODate(), mensaje: 'Hola2!'},
+    {email: 'fran.casanas.10@gmail.com', date: ISODate(), mensaje: 'Hola3!'},
+    {email: 'fran.casanas.10@gmail.com', date: ISODate(), mensaje: 'Hola4!'},
+    {email: 'fran.casanas.10@gmail.com', date: ISODate(), mensaje: 'Hola5!'},
+    {email: 'fran.casanas.10@gmail.com', date: ISODate(), mensaje: 'Hola6!'},
+    {email: 'fran.casanas.10@gmail.com', date: ISODate(), mensaje: 'Hola7!'},
+    {email: 'fran.casanas.10@gmail.com', date: ISODate(), mensaje: 'Hola8!'},
+    {email: 'fran.casanas.10@gmail.com', date: ISODate(), mensaje: 'Hola9!'},
+    {email: 'fran.casanas.10@gmail.com', date: ISODate(), mensaje: 'Hola10!'},
+    ])
+
+//db.productos.insert([
+    { title: 'CHOCOLATE SANTOCILDES 80% CACAO CON ALMENDRAS', price: 120, thumbnail: 'https://ep01.epimg.net/elcomidista/imagenes/2016/03/04/articulo/1457090599_136786_1457092476_sumario_normal.jpg'},
+    { title: 'AMAZONIA, DE LINDT', price: 150, thumbnail: 'https://ep01.epimg.net/elcomidista/imagenes/2016/03/04/articulo/1457090599_136786_1457092645_sumario_normal.jpg'},
+    { title: 'GRAND CHOCOLAT GARAM MASALA BIO, DE INTERMÓN OXFAM', price: 150, thumbnail: 'https://cdn3.iconfinder.com/data/icons/fruits-52/150/icon_fruit_uvas-256.png'},
+    { title: 'frutilla', price: 170, thumbnail: 'https://ep01.epimg.net/elcomidista/imagenes/2016/03/04/articulo/1457090599_136786_1457092931_sumario_normal.jpg'},
+    { title: 'CHOCOLATE 70% GUANAJA DE VALRHONA', price: 300, thumbnail: 'https://cdn4.iconfinder.com/data/icons/fruits-79/48/20-avocado-1024.png'},
+    { title: 'arandanos', price: 190, thumbnail: 'https://ep01.epimg.net/elcomidista/imagenes/2016/03/04/articulo/1457090599_136786_1457093756_sumario_normal.jpg'},
+    { title: 'CHOCOLATE CON LECHE Y AVELLANAS KING SIZE, DE PETRA MORA', price: 140, thumbnail: 'https://ep01.epimg.net/elcomidista/imagenes/2016/03/04/articulo/1457090599_136786_1457094101_sumario_normal.jpg'},
+    { title: 'CHOCOLATE A LA PIEDRA 65% CACAO FRANCISCO BRESCÓ', price: 160, thumbnail: 'https://ep01.epimg.net/elcomidista/imagenes/2016/03/04/articulo/1457090599_136786_1457094238_sumario_normal.jpg'},
+    { title: 'DUFFY´S INDIO ROJO, 72% CACAO CRIOLLO DE HONDURAS', price: 180, thumbnail: 'https://ep01.epimg.net/elcomidista/imagenes/2016/03/04/articulo/1457090599_136786_1457094388_sumario_normal.jpg'},
+    { title: 'LACTÉE CARAMEL, DE CACAO BARRY', price: 250, thumbnail: 'https://ep01.epimg.net/elcomidista/imagenes/2016/03/04/articulo/1457090599_136786_1457095245_sumario_normal.jpg'},
+    ])
+
+
+2) Listar todos los documentos en cada colección.
+
+//db.mensajes.find().pretty()
+//db.productos.find().pretty()
+
+3) Mostrar la cantidad de documentos almacenados en cada una de ellas.
+
+//db.mensajes.countDocuments()
+//db.productos.countDocuments()
+
+---CRUD---
+
+1)Agregar un producto más en la colección de productos
+
+//db.productos.insertOne({ title: 'FERRERO ROCHER', price: 130, thumbnail: 'https://ep01.epimg.net/elcomidista/imagenes/2016/03/04/articulo/1457090599_136786_1457095829_sumario_normal.jpg'})
+
+2)Realizar una consulta por nombre de producto específico:
+Listar los productos con precio menor a 1000 pesos.
+//db.productos.find({price: {$lt:1000}})
+
+Listar los productos con precio entre los 1000 a 3000 pesos.
+db.productos.find({price:{$gte:1000, $lte:3000 }}
+
+Listar los productos con precio mayor a 3000 pesos.
+db.productos.find({price:{$gt: 3000 }}) 
+
+Realizar una consulta que traiga sólo el nombre del tercer producto más barato.
+//db.productos.find().sort({price:1}).skip(2).limit(1)
+
+3)Hacer una actualización sobre todos los productos, agregando el campo stock a todos ellos con un valor de 100.
+//db.productos.updateMany({},{$set:{"stock":100}})
+
+4)Cambiar el stock a cero de los productos con precios mayores a 4000 pesos. 
+db.productos.updateMany({price: {$gt:4000}},{$set:{stock:0}})
+
+5)Borrar los productos con precio menor a 1000 pesos 
+db.productos.deleteMany({precio:{$lt:1000}})
+
+6)Crear un usuario 'pepe' clave: 'asd456' que sólo pueda leer la base de datos ecommerce. Verificar que pepe no pueda cambiar la información.
+// use admin
+//db.createUser({user: "pepe", pwd: "asd456", roles: [{role: "read", db: "ecommerce"}]})
